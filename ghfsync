@@ -183,8 +183,19 @@ does_remote_exist() {
     pushd /tmp 2>&1 >/dev/null
     _remote_head=$(git ls-remote ${REMOTE_URL} HEAD 2>/dev/null)
     local r=$?
-    popd 2>&1 >/dev/null   
-    ((r)) && return 1
+    popd 2>&1 >/dev/null
+    if ((r)); then
+        echo "Remote repository '$REPO' doesn't exist on host '$REMOTE_URL'."
+        echo "If you're using GitHub as your central repository, we can create it for you."
+        read -p "Do you want to create a new repository on GitHub ? (y/N) " r
+        r=${r:-N}
+        if [[ "$r" =~ ^\ *[yY] ]]; then
+            ! create_gh_repo "$name" "$pwd" && echo "Failed to create repository on GitHub." && HAS_REMOTE=0
+        else
+            HAS_REMOTE=0
+        fi
+        return 1
+    fi
     return 0
 }
 
@@ -312,12 +323,6 @@ create_repo() {
     ## check remote repository
     local new_repo=0
     if ! does_remote_exist; then
-        echo "Remote repository '$REPO' doesn't exist on host '$REMOTE_URL'."
-        echo "If you're using GitHub as your central repository, we can create it for you."
-        read -p "Do you want to create a new repository on GitHub ? (y/N) " r
-        r=${r:-N}
-        ! [[ "$r" =~ ^\ *[yY] ]] && exit 1
-        ! create_gh_repo "$name" "$pwd" && echo "Failed to create repository on GitHub." && exit 1
         new_repo=1
     fi
     if ((new_repo)) || [[ -z "$_remote_head" ]]; then
