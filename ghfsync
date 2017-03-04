@@ -346,13 +346,27 @@ create_repo() {
     fi
 }
 
+add_remote() {
+    REMOTE_URL=$REPO_URL
+    ! [[ -n "$REPO_URL" && -n "$ALIAS" ]] && echo "Missing parameter for remote repository." && usage && exit 1
+    if ! does_remote_exist; then
+        if ! ((HAS_REMOTE)); then
+            echo "Remote repository's $ALIAS not added."
+            exit 1
+        fi
+    fi
+    _add_repo && echo "Remote '$ALIAS' added." || return 1
+    [[ -z "$_remote_head" ]] && { _sync_repo || return 1; }
+    return 0
+}
+
 ## manage existing repository
 manage_repo() {
     cd "$RHOME/$REPO"
     ## only check status
     ((STATUS)) && { check_status;  return $?; }
     ((LIST)) && { git remote; return $?; }
-    ((ADD_REPO)) && { git remote add "$ALIAS" "$REPO_URL" && echo "$ALIAS added."; return $?; }
+    ((ADD_REPO)) && { add_remote; return $?; }
     ((DEL_REPO)) && { git remote remove "$ALIAS" && echo "$ALIAS removed."; return 0; }
     ## sync with remotes
     if ((SYNC_ALL)); then
