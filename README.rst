@@ -7,6 +7,13 @@ Which doesn't mean anything at all... But we really don't care.
 
 GHF is a simple tool to ease sharing repositories encrypted with `git-crypt <https://www.agwa.name/projects/git-crypt/>`__ on public hosts like GitHub.
 
+Requirements
+============
+
+- git
+- `git-crypt <https://www.agwa.name/projects/git-crypt/>`__
+- gpg
+
 Usage
 =====
 
