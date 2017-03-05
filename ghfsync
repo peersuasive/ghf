@@ -29,12 +29,13 @@ usage() {
 }
 
 ## basic requirements
-RHOME=$HOME/Shared
 RURL=
 ! [[ -d "$RHOME" ]] && echo "Missing GHF root directory" && exit 1
 
 [[ -f $HOME/.ghfsyncrc ]] && . $HOME/.ghfsyncrc
 [[ -f $HOME/.config/ghfsync/ghfsync.conf ]] && . $HOME/.config/ghfsync/ghfsync.conf
+
+RHOME=${RHOME:-$HOME/Shared}
 
 ## parse options
 REPO=
