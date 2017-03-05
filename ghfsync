@@ -313,7 +313,7 @@ register_repo() {
     fi
     _init_common
     local x r
-    x=$(git pull origin master 2>&1)
+    x=$(git pull --depth 1 origin master 2>&1)
     r=$?
     (($r)) && echo "Failed to link repository." && echo "$x" && return 1
     git-crypt unlock "$KEY" 1>/dev/null || return 1
