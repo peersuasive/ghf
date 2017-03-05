@@ -290,11 +290,11 @@ _initialise_repo() {
     git commit -m"init" 1>/dev/null
     _sync_repo
     local key=$(mktemp -u kkXXXXXXX)
-    local pkey=/tmp/$key
+    local pkey=/tmp/${key}.gpg
     #git-crypt export-key /tmp/$key 1>/dev/null || return 1
     
     echo "Please, enter a passphrase to protect your private key."
-    git-crypt export-key -- - | GPG_AGENT_INFO="" gpg --no-use-agent -o "$pkey".gpg --cipher-algo AES256 --symmetric --set-filename "$key"
+    git-crypt export-key -- - | GPG_AGENT_INFO="" gpg --no-use-agent -o "$pkey" --cipher-algo AES256 --symmetric --set-filename "$key"
 
     echo "Your private key is in '$pkey'."
     return 0
